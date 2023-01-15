@@ -171,7 +171,6 @@
         let scoreP1 = document.getElementById("scoreP1")
         let scoreP2 = document.getElementById("scoreP2")
         let flag = 0
-        let count = 0
 
         function doInit() {
             function log_msg(msg) {
@@ -200,13 +199,14 @@
                 log_msg("connection exception:" + ex);
             }
         }
-        document.getElementById("btn").addEventListener("click", function () {
+        document.getElementById("btn").addEventListener("click", function () { // 當點加入遊戲
             s.onmessage = function (e) {
                 let msg = e.data.split("#")
-                Status = msg[3]
-                if (Status === "clickSquare") {  // 點擊方格時
+                // msg[3]用來記錄遊戲狀態
+                if (msg[3] === "clickSquare") {  // 點擊方格時
                     msgs = e.data.split('#');
                     let position = msgs[1] + msgs[0]
+                    // 如果msg[2] > 0 為藍色方玩家
                     if (msgs[2] > 0) {
                         document.getElementById(position).style.backgroundColor = "LightSkyBlue"
                         document.getElementById(position).innerText = msgs[2]
@@ -217,10 +217,12 @@
                         document.getElementById(position).style.backgroundColor = "white"
                         document.getElementById(position).innerText = "0"
                     }
+                    // 記錄當下玩家的比數
                     scoreP1.innerText = msg[4]
                     scoreP2.innerText = msg[5]
                     console.log(position + " " + msgs[2] + " " + msg[4] + ":" + msg[5])
-                }else if (Status === "end"){
+                }else if (msg[3] === "end"){ //比賽時間到
+                    // 看是誰贏
                     let winner = msg[2]
                     if (winner === "0"){
                         final.innerHTML = "藍色方 玩家獲勝 5秒後退出房間"
@@ -229,10 +231,10 @@
                     }else{
                         final.innerHTML = "平手 5秒後退出房間"
                     }
-                    let down = 5 // 結束後離開
+                    let quit = 5 // 結束後離開
                         let fight = setInterval(function () {
-                            down-=1
-                            if (down <= 0) {
+                            quit = quit - 1
+                            if (quit <= 0) {
                                 clearInterval(fight)
                                 s.send("quit")
                                 location.reload()
@@ -257,11 +259,11 @@
                             wrapper.style.display = "block"
                             waiting.innerHTML = "等待另外一位玩家"
                             console.log(e.data)
-                            if (msg[0] === '2') {  // 人數到齊
+                            if (msg[0] === '2') {  // 滿2人後
                                 let countdown = 4
                                 waiting.innerHTML = "玩家已到齊，準備開始對戰"
                                 let interval = setInterval(function () {
-                                    countdown-=1
+                                    countdown = countdown - 1
                                     flag = 1 // 紀錄是否還在對戰
                                     start_time.innerText = "準備開始: " + countdown
                                     start.style.display = "block"
@@ -271,9 +273,9 @@
                                         start_time.style.display = "none"
                                         waiting.innerHTML = "Fighting!!!"
                                         start.style.display = "block"
-                                        count = 6 // Timer
+                                        let count = 31 // Timer
                                         let fight = setInterval(function () {
-                                            count-=1
+                                            count = count -1
                                             game_time.innerText = count
                                             if (count <= 0) {
                                                 clearInterval(fight)

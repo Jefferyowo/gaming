@@ -61,7 +61,7 @@ async def handler(websocket, path):
             c = msg[1][0]
             point = str(territory[row][column])
             scoreP1, scoreP2 = cal_score(territory)
-            await attack(r + "#" + c + "#" + point + "#" + "clickSquare" + "#" + scoreP1 + "#" + scoreP2)
+            await score(r + "#" + c + "#" + point + "#" + "clickSquare" + "#" + scoreP1 + "#" + scoreP2)
         elif msg[0] == "stop":
             scoreP1, scoreP2 = cal_score(territory)
             winner = 0
@@ -72,9 +72,9 @@ async def handler(websocket, path):
             scoreP1 = str(scoreP1)
             scoreP2 = str(scoreP2)
             winner = str(winner)
-            await attack(scoreP1 + "#" + scoreP2 + "#" + winner + "#" + "end")
-        elif msg[0] == "quit":
-            players = []
+            await score(scoreP1 + "#" + scoreP2 + "#" + winner + "#" + "end")
+        elif msg[0] == "quit": #離開房間 
+            players = [] #清空玩家
             territory = [[0 for i in range(5)] for j in range(5)]
             await broadcast_click("0" + "#prepare")
 
@@ -82,7 +82,7 @@ async def broadcast_click(msg):
     m = msg.split("#")
     await broadcast(m[0])
     print(msg, 'show_number')
-    for websock in clients:
+    for websock in over2People:
         try:
             await websock.send(msg)  # send message to each client
         except websockets.exceptions.ConnectionClosed:
@@ -99,7 +99,8 @@ async def broadcast(msg):
                 print("Client disconnected. Do cleanup")
                 clients.remove(websock)
 
-async def attack(msg):
+# 回傳分數資訊給html
+async def score(msg):
     print(msg, 'color')
     for websock in players:
         try:
