@@ -177,7 +177,7 @@
                 console.log(msg);
             }
             try {
-                var host = "ws://localhost:8787/"; //設定socker server的ip:port
+                var host = "ws://10.99.1.99:8787/"; //設定socker server的ip:port
                 /*if(window.location.hostname) {
                     host = "ws://" + window.location.hostname + ":4545/";
                 }*/
@@ -205,6 +205,7 @@
                 // msg[3]用來記錄遊戲狀態
                 if (msg[3] === "clickSquare") {  // 點擊方格時
                     msgs = e.data.split('#');
+                    // 將格子插入顏色跟值
                     let position = msgs[1] + msgs[0]
                     // 如果msg[2] > 0 為藍色方玩家
                     if (msgs[2] > 0) {

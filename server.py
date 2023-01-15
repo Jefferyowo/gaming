@@ -8,7 +8,6 @@ players = []
 over2People = []
 territory = [[0 for i in range(5)] for j in range(5)]
 
-
 def cal_score(state):
     scoreP1 = 0
     scoreP2 = 0
@@ -19,7 +18,6 @@ def cal_score(state):
             elif state[i][j] < 0:
                 scoreP2 = scoreP2 + 1
     return str(scoreP1), str(scoreP2)
-
 
 # handler for socket message activities
 async def handler(websocket, path):
@@ -113,6 +111,6 @@ async def score(msg):
 loop = asyncio.new_event_loop()  # get an event loop
 asyncio.set_event_loop(loop)  # set the event loop to asyncio
 loop.run_until_complete(
-    websockets.serve(handler, 'localhost', 8787)  # setup the websocket service and handler
+    websockets.serve(handler, '10.99.1.99', 8787)  # setup the websocket service and handler
 )  # hook to localhost:4545
 loop.run_forever()  # keep it running
